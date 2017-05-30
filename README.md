@@ -1,2 +1,3 @@
 # aesccm-prototype
-aes ccm mode prototype
+
+implements aes ccm mode defined in RFC3610.

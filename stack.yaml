@@ -1,0 +1,8 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- cryptonite-0.23
+- primitive-0.6.2.0
+resolver: lts-8.15

@@ -1,0 +1,62 @@
+name:                aesccm-prototype
+version:             0.1.0.0
+synopsis:            implements aes ccm mode
+description:         implements aes ccm mode
+homepage:            https://github.com/wangbj/aesccm-prototype.git
+license:             BSD3
+license-file:        LICENSE
+author:              Baojun Wang
+maintainer:          wangbj@gmail.com
+copyright:           2017 Baojun Wang
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     AESCCM
+  build-depends:       base >= 4.7 && < 5
+                     , bytestring >= 0.10 && < 1
+                     , cryptonite >= 0.22 && < 1
+                     , mtl >= 2.2 && < 3
+                     , QuickCheck >= 2.9 && < 3
+                     , memory >= 0.14 && < 1
+                     , hspec >= 2.4 && < 3
+                     , hspec-core >= 2.4 && < 3
+  default-language:    Haskell2010
+
+executable ccm-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , bytestring >= 0.10 && < 1
+                     , cryptonite >= 0.22 && < 1
+                     , mtl >= 2.2 && < 3
+                     , QuickCheck >= 2.9 && < 3
+                     , memory >= 0.14 && < 1
+                     , hspec >= 2.4 && < 3
+                     , hspec-core >= 2.4 && < 3
+                     , aesccm-prototype
+  default-language:    Haskell2010
+
+test-suite ccm-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , bytestring >= 0.10 && < 1
+                     , cryptonite >= 0.22 && < 1
+                     , mtl >= 2.2 && < 3
+                     , QuickCheck >= 2.9 && < 3
+                     , memory >= 0.14 && < 1
+                     , hspec >= 2.4 && < 3
+                     , hspec-core >= 2.4 && < 3
+                     , aesccm-prototype
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/wangbj/aesccm-prototype
