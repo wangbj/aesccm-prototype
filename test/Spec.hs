@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
 import qualified Data.ByteString as S
@@ -221,5 +222,35 @@ ccmTest = hspec $ do
   describe "ccm can pass all tests in rfc3610 example" $ do
     mapM_ doCcmTest (zip [1..] ccmTestData)
 
-main = void ccmTest
+toCCM_M 8 = CCM_M8
+toCCM_M 10 = CCM_M10
+toCCM_M 12 = CCM_M12
 
+cryptoniteCcmEncrypt m l k i n a = encrypted <> (BA.convert tag)
+  where
+    aead = throwCryptoError $ aeadInit (AEAD_CCM (S.length i) (toCCM_M m) CCM_L2) k n
+    (tag, encrypted) = aeadSimpleEncrypt aead a i m
+
+cryptoniteCcmEncrypt2 m l k i n a = Just i == decrypted
+  where
+    aead = throwCryptoError $ aeadInit (AEAD_CCM (S.length i) CCM_M16 CCM_L2) k n
+    (tag, encrypted) = aeadSimpleEncrypt aead a i 16
+    decrypted        = aeadSimpleDecrypt aead a encrypted tag
+
+doCryptoniteCcmTest (x, (CcmTestData m l k i n a o)) = it ("testcase: " ++ show x) ((a <> cryptoniteCcmEncrypt m l key i n a) `shouldBe` o)
+  where key = cipherInitNoErr k :: AES128
+
+doCryptoniteCcmTest2 (x, (CcmTestData m l k i n a o)) = it ("testcase (aes128): " ++ show x) (cryptoniteCcmEncrypt2 m l k128 i n a `shouldBe` True) >> it ("testcase (aes192): " ++ show x) (cryptoniteCcmEncrypt2 m l k192 i n a `shouldBe` True) >> it ("testcase (aes256): " ++ show x) (cryptoniteCcmEncrypt2 m l k256 i n a `shouldBe` True)
+  where k128 = cipherInitNoErr k :: AES128
+        k192 = cipherInitNoErr (S.take 24 (k<>k)) :: AES192
+        k256 = cipherInitNoErr (k <> k) :: AES256
+
+cryptoniteCcmTest2 = hspec $ do
+  describe "(cryptonite) ccm can pass all tests in rfc3610 example" $ do
+    mapM_ doCryptoniteCcmTest2 (zip [1..] ccmTestData)
+
+cryptoniteCcmTest = hspec $ do
+  describe "(cryptonite) ccm can pass all tests in rfc3610 example" $ do
+    mapM_ doCryptoniteCcmTest (zip [1..] ccmTestData)
+
+main = ccmTest >> cryptoniteCcmTest >> cryptoniteCcmTest2

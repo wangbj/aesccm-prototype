@@ -2,9 +2,12 @@ flags: {}
 extra-package-dbs: []
 packages:
 - '.'
+- location:
+    git: https://github.com/wangbj/cryptonite
+    commit: ef2e5dce9f9e1c33774bb85838f6957b7e0ccfd9
+  extra-dep: true
 extra-deps:
 - aeson-1.2.0.0
-- cryptonite-0.23
 - primitive-0.6.2.0
 - vector-0.12.0.1
 resolver: lts-8.15
